@@ -26,7 +26,7 @@
           </p>
           <form class="form">
             <div class="form-group">
-              <input class="form-control" type="file" name="baseFile" onchange="previewBaseFile()">
+              <input class="form-control" type="file" name="baseFile" onchange="previewEncodeImage()">
             </div>
 
             <div class="form-group">
@@ -71,10 +71,10 @@
           </p>
           <form class="form">
             <div class="form-group">
-              <input class="form-control" type="file" name="decodeFile" onchange="previewDecodeFile()">
+              <input class="form-control" type="file" name="decodeFile" onchange="previewDecodeImage()">
             </div>
             <div class="form-group">
-              <button class="decode btn btn-default pull-right">Decode</button>
+              <button class="decode btn btn-default pull-right" onclick="decodeMessage()">Decode</button>
             </div>
           </form>
           <div class="clearfix"></div>
