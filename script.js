@@ -101,7 +101,7 @@ function encodeMessage() {
   for (i = 0; i < text.length; i++) {
     var binaryChar = text[i].charCodeAt(0).toString(2);
 
-    // Pad with 0 until the binaryChar has a lenght of 8 (1 Byte)
+    // Pad with 0 until the binaryChar has a length of 8 (1 Byte)
     while(binaryChar.length < 8) {
       binaryChar = "0" + binaryChar;
     }
@@ -130,7 +130,7 @@ function encodeMessage() {
   $(".binary").fadeIn();
   $(".images .nulled").fadeIn();
   $(".images .message").fadeIn();
-};
+}
 
 function decodeMessage() {
   var $originalCanvas = $('.decode canvas');
@@ -163,4 +163,43 @@ function decodeMessage() {
 
   $('.binary-decode textarea').text(output);
   $('.binary-decode').fadeIn();
-};
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+
+  // Retrieve the files from the event
+  const files = event.dataTransfer.files;
+
+  if (files.length) {
+    // Find the closest form to the drop target
+    const form = event.target.closest('form');
+
+    if (form) {
+      // Find the file input within the form
+      const fileInput = form.querySelector('input[type="file"]');
+
+      if (fileInput) {
+        // Create a DataTransfer to simulate file input
+        const dataTransfer = new DataTransfer();
+        for (const file of files) {
+          dataTransfer.items.add(file);
+        }
+
+        // Assign the files to the file input
+        fileInput.files = dataTransfer.files;
+
+        // Dispatch the change event on the file input
+        const changeEvent = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(changeEvent);
+      } else {
+        console.error('File input not found.');
+      }
+    } else {
+      console.error('Form not found.');
+    }
+  } else {
+    console.error('No files found in the drop event.');
+  }
+}
+
