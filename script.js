@@ -10,6 +10,7 @@ function previewDecodeImage() {
   });
 }
 
+
 function previewEncodeImage() {
   var file = document.querySelector("input[name=baseFile]").files[0];
 
@@ -49,6 +50,14 @@ function previewImage(file, canvasSelector, callback) {
 }
 
 function encodeMessage() {
+
+  if ($("textarea.message").val() == "") {
+    $(".error").fadeIn();
+    window.alert("Please enter a message");
+    return;
+  }
+
+
   $(".error").hide();
   $(".binary").hide();
 
@@ -132,35 +141,56 @@ function encodeMessage() {
   $(".images .message").fadeIn();
 };
 
+function downloadImage() {
+  var $canvas = $('.message canvas');
+  var canvas = $canvas[0];
+  var link = document.createElement('a');
+  link.download = 'image.png';
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
 function decodeMessage() {
-  var $originalCanvas = $('.decode canvas');
-  var originalContext = $originalCanvas[0].getContext("2d");
 
-  var original = originalContext.getImageData(0, 0, $originalCanvas.width(), $originalCanvas.height());
+  var canvas = $('.decode canvas')[0];
+
+  if (!canvas || canvas.width === 0) {
+    alert("Image not loaded.");
+    return;
+  }
+
+  var context = canvas.getContext("2d");
+  var width = canvas.width;
+  var height = canvas.height;
+
+  var imageData = context.getImageData(0, 0, width, height);
+  var pixel = imageData.data;
+
   var binaryMessage = "";
-  var pixel = original.data;
-  for (var i = 0, n = pixel.length; i < n; i += 4) {
-    for (var offset =0; offset < 3; offset ++) {
-      var value = 0;
-      if(pixel[i + offset] %2 != 0) {
-        value = 1;
-      }
 
-      binaryMessage += value;
+  for (var i = 0; i < pixel.length; i += 4) {
+    for (var offset = 0; offset < 3; offset++) {
+      binaryMessage += (pixel[i + offset] % 2 === 0) ? "0" : "1";
     }
   }
 
   var output = "";
+
   for (var i = 0; i < binaryMessage.length; i += 8) {
-    var c = 0;
-    for (var j = 0; j < 8; j++) {
-      c <<= 1;
-      c |= parseInt(binaryMessage[i + j]);
+
+    var byte = binaryMessage.substr(i, 8);
+
+    if (byte === "00000000") {
+      break;
     }
 
-    output += String.fromCharCode(c);
+    var charCode = parseInt(byte, 2);
+
+    if (!isNaN(charCode)) {
+      output += String.fromCharCode(charCode);
+    }
   }
 
-  $('.binary-decode textarea').text(output);
+  $('.binary-decode textarea').val(output);
   $('.binary-decode').fadeIn();
-};
+}

@@ -1,12 +1,14 @@
 <html>
+
 <head>
-  <title>Steganography Online</title>
+  <title>Steganography</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
   <div class="container">
     <div class="page-header">
-      <h1>Steganography Online</h1>
+      <h1>Steganography</h1>
     </div>
 
     <ul class="nav nav-tabs" id="tabs" data-tabs="tabs">
@@ -19,10 +21,13 @@
         <div>
           <h2>Encode message</h2>
           <p class="alert alert-info">
-            To encode a message into an image, choose the image you want to use, enter your text and hit the <strong>Encode</strong> button. <br/>
-            Save the last image, it will contain your hidden message. <br/>
-            Remember, the more text you want to hide, the larger the image has to be. In case you chose an image that is too small to hold your message you will be informed.<br/><br/>
-            Neither the image nor the message you hide will be at any moment transmitted over the web, all the magic happens within your browser.
+            To encode a message into an image, choose the image you want to use, enter your text and hit the
+            <strong>Encode</strong> button. <br />
+            Save the last image, it will contain your hidden message. <br />
+            Remember, the more text you want to hide, the larger the image has to be. In case you chose an image that is
+            too small to hold your message you will be informed.<br /><br />
+            Neither the image nor the message you hide will be at any moment transmitted over the web, all the magic
+            happens within your browser.
           </p>
           <form class="form">
             <div class="form-group">
@@ -55,9 +60,11 @@
             <h3>Normalized</h3>
             <canvas></canvas>
           </div>
-          <div class="message" style="display: none;">
-            <h3>Message hidden in image (right click <span class="glyphicon glyphicon-arrow-right"></span> save as)</h3>
+          <div class="message text-left" style="display: none; margin-bottom: 5px;">
+            <h3>Message hidden in image</h3>
             <canvas></canvas>
+            <br>
+            <button class="btn btn-default download-btn" onclick="downloadImage()">Download</button>
           </div>
         </div>
       </div>
@@ -66,8 +73,10 @@
         <div>
           <h2>Decode image</h2>
           <p class="alert alert-info">
-            To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong> button.<br/><br/>
-            Neither the image nor the message that has been hidden will be at any moment transmitted over the web, all the magic happens within your browser.
+            To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong>
+            button.<br /><br />
+            Neither the image nor the message that has been hidden will be at any moment transmitted over the web, all
+            the magic happens within your browser.
           </p>
           <form class="form">
             <div class="form-group">
@@ -81,7 +90,7 @@
         </div>
         <div class="binary-decode" style="display: none;">
           <h3>Hidden message</h3>
-          <textarea class="form-control message" style="word-wrap:break-word;">
+          <textarea class="form-control message" style="word-wrap:break-word;" readonly>
           </textarea>
         </div>
         <div class="decode" style="display: none;">
@@ -92,9 +101,6 @@
 
     </div>
 
-    <footer style="text-align: center; margin-top: 20px; margin-bottom: 10px;">
-      &copy; 2014 by <a href="mailto:stylesuxx@gmail.com">stylesuxx</a>
-    </footer>
   </div>
 
   <style>
@@ -107,4 +113,5 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script type="text/JavaScript" src="script.js"></script>
 </body>
+
 </html>
