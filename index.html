@@ -1,110 +1,702 @@
-<html>
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
 <head>
-  <title>Steganography Online</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net">
+  <title>Steganography Online Enhanced</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f8f9fa'/><rect x='6' y='12' width='20' height='14' rx='2' fill='none' stroke='%23495057' stroke-width='2'/><rect x='10' y='8' width='12' height='6' rx='1' fill='none' stroke='%23495057' stroke-width='2'/></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-  <div class="container">
-    <div class="page-header">
-      <h1>Steganography Online</h1>
+  <div class="container-lg">
+    <header class="my-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">Steganography Online Enhanced</h1>
+        <button id="theme-toggle" class="btn btn-outline-secondary" type="button" aria-label="Toggle theme">
+          <span class="theme-icon-light">🌙</span>
+          <span class="theme-icon-dark d-none">☀️</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="card-title">What is steganography?</h2>
+        <p class="card-text">Steganography is the practice of hiding a secret message inside something ordinary, like a picture, audio file, or video, so nobody knows the message exists.</p>
+        <div class="accordion" id="aboutAccordion">
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aboutCollapse" aria-expanded="false" aria-controls="aboutCollapse">
+                Tell me more
+              </button>
+            </h3>
+            <div id="aboutCollapse" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+              <div class="accordion-body">
+                <p>Steganography is a technique used to conceal information within another medium, known as the <strong>cover medium</strong>, without noticeably changing its appearance or function. Unlike <strong>cryptography</strong>, which <strong>disguises the meaning</strong> of a message, <strong>steganography disguises the existence</strong> of the message.</p>
+                <p>For example, a secret message can be embedded into an image by modifying the least significant bits (LSBs) of pixel color values. These tiny changes are generally invisible to the human eye but can be extracted by someone who knows the embedding method.</p>
+                <p class="mb-1"><strong>Key distinction:</strong></p>
+                <ul>
+                  <li><strong>Cryptography:</strong> You can see the secret message exists, but you cannot understand it.</li>
+                  <li><strong>Steganography:</strong> You do not know a secret message exists in the first place.</li>
+                </ul>
+                <p class="mb-0">The two techniques can also be combined: encrypt a message first, then hide the ciphertext using steganography.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3" id="lsbCard">
+          <div class="card-body">
+            <h3 class="card-title h4">What is LSB (Least Significant Bit) Steganography?</h3>
+            <p class="card-text">LSB steganography hides secret information by making tiny, nearly invisible changes to the colors of pixels in an image.</p>
+            <div class="accordion" id="lsbAccordion">
+              <div class="accordion-item">
+                <h4 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lsbCollapse" aria-expanded="false" aria-controls="lsbCollapse">
+                    Tell me more
+                  </button>
+                </h4>
+                <div id="lsbCollapse" class="accordion-collapse collapse" data-bs-parent="#lsbAccordion">
+                  <div class="accordion-body">
+                    <h5 class="h6">What is LSB?</h5>
+                    <p><strong>Least Significant Bit (LSB)</strong> is the rightmost bit in a binary number - it has the smallest impact on the overall value.</p>
+
+                    <div class="alert alert-light">
+                      <strong>Example:</strong><br>
+                      <code>11010110</code> → The <code>0</code> at the end is the LSB<br>
+                      <code>11010111</code> → Changed to <code>1</code> - only changes value by 1!
+                    </div>
+
+                    <p>In images, changing the LSB in color values (0-255) creates <strong>invisible changes</strong> to the human eye:</p>
+                    <div class="alert alert-info">
+                      Red: <code>200</code> vs <code>201</code> - You can't tell the difference! 🎨
+                    </div>
+
+                    <hr>
+
+                    <h5 class="h6">📊 Storage Capacity</h5>
+                    <ul>
+                      <li>Each pixel has <strong>3 color channels</strong>: Red, Green, Blue</li>
+                      <li>Each channel provides <strong>1 LSB</strong> for hiding data</li>
+                      <li><strong>1 pixel = 3 bits</strong> of hidden storage</li>
+                    </ul>
+
+                    <div class="alert alert-success" id="lsbImageInfo">
+                      <strong>Your Image:</strong><br>
+                      Upload an image to see calculations
+                    </div>
+
+                    <hr>
+
+                    <h5 class="h6">📐 The Math</h5>
+                    <div class="accordion" id="formulaAccordion">
+                      <div class="accordion-item">
+                        <h6 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#formulaCollapse" aria-expanded="false" aria-controls="formulaCollapse">
+                            Click to see the formula breakdown
+                          </button>
+                        </h6>
+                        <div id="formulaCollapse" class="accordion-collapse collapse" data-bs-parent="#formulaAccordion">
+                          <div class="accordion-body">
+                            <p><strong>Formula:</strong></p>
+                            <div class="alert alert-secondary">
+                              <code>Capacity = (Width × Height × 3) ÷ 8</code>
+                            </div>
+
+                            <p><strong>Breaking it down:</strong></p>
+                            <ul>
+                              <li><code>Width × Height</code> = Total pixels</li>
+                              <li><code>× 3</code> = Three color channels (R, G, B)</li>
+                              <li><code>÷ 8</code> = Convert bits to bytes</li>
+                            </ul>
+
+                            <div class="alert alert-primary mb-0">
+                              <strong>Your image example:</strong><br>
+                              <span id="lsbCalcSteps">Load an image to see the calculation</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="h6">🏗️ v3 Format Architecture</h5>
+                    <p>This tool uses a two-layer encoding system for reliable detection and optimal capacity:</p>
+
+                    <div class="alert alert-info">
+                      <strong>Layer 1: Fixed Sentinel (1-LSB)</strong><br>
+                      First 19 pixels always use 1-LSB to store:
+                      <ul class="mb-0 mt-2">
+                        <li>Magic number (0xAA55) for format detection</li>
+                        <li>LSB mode used for message (1-4 bits)</li>
+                        <li>Message length (up to 4GB)</li>
+                      </ul>
+                    </div>
+
+                    <div class="alert alert-success">
+                      <strong>Layer 2: Variable Message (N-LSB)</strong><br>
+                      Remaining pixels use the optimal LSB mode for your message size.
+                    </div>
+
+                    <hr>
+
+                    <h5 class="h6">🚀 Multi-bit LSB Modes</h5>
+                    <p>The tool automatically selects the minimum LSB mode needed (you can override):</p>
+
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Mode</th>
+                            <th>Capacity</th>
+                            <th>Visual Impact</th>
+                            <th>Overhead</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><strong>1-LSB</strong></td>
+                            <td>Baseline</td>
+                            <td>Invisible (±1)</td>
+                            <td>7 bytes</td>
+                          </tr>
+                          <tr>
+                            <td><strong>2-LSB</strong></td>
+                            <td>2× capacity</td>
+                            <td>Barely visible (±3)</td>
+                            <td>7 bytes</td>
+                          </tr>
+                          <tr>
+                            <td><strong>3-LSB</strong></td>
+                            <td>3× capacity</td>
+                            <td>Slight noise (±7)</td>
+                            <td>7 bytes</td>
+                          </tr>
+                          <tr>
+                            <td><strong>4-LSB</strong></td>
+                            <td>4× capacity</td>
+                            <td>Visible degradation (±15)</td>
+                            <td>7 bytes</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="alert alert-warning mb-0">
+                      <strong>Auto-Selection Strategy:</strong> The tool always chooses the lowest LSB mode that fits your message, prioritizing stealth over capacity. The fixed sentinel (7 bytes) ensures reliable detection regardless of mode.
+                    </div>
+
+                    <hr>
+
+                    <h5 class="h6">🔒 Optional Encryption</h5>
+                    <p>Switching on <strong>Encrypt with password</strong> runs your message through <strong>AES-256-GCM</strong> with a key derived from your password using <strong>PBKDF2-SHA256</strong> (600,000 iterations), both from the browser's built-in Web Crypto API. The ciphertext includes a 128-bit tag that detects tampering, and a flag bit in the sentinel marks the image as encrypted so Decode knows to ask for the password.</p>
+                    <p class="mb-0 small text-muted">AES-GCM protects what the message says and detects tampering, but <strong>LSB hiding</strong> only tries to conceal that a message exists. The magic number and encryption flag make that fairly easy to detect. Security depends on password strength &mdash; there is no password recovery.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <ul class="nav nav-tabs" id="tabs" data-tabs="tabs">
-      <li role="presentation" class="active"> <a href="#encode" data-toggle="tab">Encode</a></li>
-      <li role="presentation"> <a href="#decode" data-toggle="tab">Decode</a></li>
+    <ul class="nav nav-pills mb-3" id="tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" href="#encode" data-bs-toggle="tab" role="tab" aria-controls="encode" aria-selected="true">Encode</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" href="#decode" data-bs-toggle="tab" role="tab" aria-controls="decode" aria-selected="false">Decode</a>
+      </li>
     </ul>
 
-    <div id="my-tab-content" class="tab-content">
-      <div class="tab-pane active" id="encode">
-        <div>
-          <h2>Encode message</h2>
-          <p class="alert alert-info">
-            To encode a message into an image, choose the image you want to use, enter your text and hit the <strong>Encode</strong> button. <br/>
-            Save the last image, it will contain your hidden message. <br/>
-            Remember, the more text you want to hide, the larger the image has to be. In case you chose an image that is too small to hold your message you will be informed.<br/><br/>
-            Neither the image nor the message you hide will be at any moment transmitted over the web, all the magic happens within your browser.
-          </p>
+    <div id="my-tab-content" class="tab-content mt-3">
+      <div class="tab-pane fade show active" id="encode" role="tabpanel" aria-labelledby="encode-tab">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Encode message</h2>
+            <p class="alert alert-info mb-0">
+              To encode a message into an image, choose the image you want to use, enter your text and hit the <strong>Encode</strong> button. 
+              Save the last image<span class="d-none d-sm-inline">, it will contain your hidden message</span>.<br/>
+              <span class="d-none d-md-inline">Remember, the more text you want to hide, the larger the image has to be. In case you chose an image that is too small to hold your message you will be informed.<br/></span>
+              <small class="d-block mt-2">Neither the image nor the message you hide will be transmitted over the web, all the magic happens within your browser.</small>
+            </p>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-body">
           <form class="form">
-            <div class="form-group">
-              <input class="form-control" type="file" name="baseFile" onchange="previewEncodeImage()">
+            <div class="mb-3">
+              <div class="drop-zone" id="encodeDropZone">
+                <input class="form-control d-none" type="file" name="baseFile" accept="image/png,image/jpeg,image/webp">
+                <div class="drop-zone-content">
+                  <div class="drop-zone-icon">📁</div>
+                  <div class="drop-zone-text">
+                    <strong>Drag & Drop Image Here</strong><br>
+                    <small class="text-muted">or click to browse</small>
+                  </div>
+                </div>
+                <div class="drop-zone-preview" aria-hidden="true">
+                  <canvas></canvas>
+                </div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <textarea class="form-control message" rows="3" placeholder="Enter your message here"></textarea>
+            <div class="mb-3">
+              <label class="form-label d-flex justify-content-between align-items-center">
+                <span>Secret payload</span>
+                <div class="d-flex flex-column align-items-end gap-1">
+                  <span class="badge bg-secondary" id="message-counter-badge">📝 0 characters (0 bytes)</span>
+                  <span class="badge bg-success" id="capacity-badge" style="display: none;" role="button" title="Click to learn how this works">💾 0 / 0 bytes available</span>
+                </div>
+              </label>
+
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Payload type">
+                <input type="radio" class="btn-check" name="payloadType" id="payloadTypeText" value="text" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="payloadTypeText">📝 Text message</label>
+                <input type="radio" class="btn-check" name="payloadType" id="payloadTypeFile" value="file" autocomplete="off">
+                <label class="btn btn-outline-primary" for="payloadTypeFile">📎 File</label>
+              </div>
+
+              <div id="payloadTextWrap">
+                <textarea class="form-control message" rows="3" placeholder="Enter your message here"></textarea>
+              </div>
+
+              <div id="payloadFileWrap" style="display: none;">
+                <input class="form-control d-none" type="file" name="secretFile" id="secretFileInput">
+                <div class="drop-zone" id="secretFileDropZone">
+                  <div class="drop-zone-content">
+                    <div class="drop-zone-icon">📎</div>
+                    <div class="drop-zone-text">
+                      <strong>Drag &amp; Drop File Here</strong><br>
+                      <small class="text-muted">or click to browse (any file type up to 50&nbsp;MB)</small>
+                    </div>
+                  </div>
+                  <div class="drop-zone-preview" aria-hidden="true" id="secretFileInfo">
+                    <div class="p-3">
+                      <div><strong id="secretFileName">(no file)</strong></div>
+                      <small class="text-muted d-block" id="secretFileMeta"></small>
+                      <button type="button" class="btn btn-sm btn-link p-0 mt-2" id="secretFileClear">Clear file</button>
+                    </div>
+                  </div>
+                </div>
+                <small class="text-muted d-block mt-2">
+                  The file's name and MIME type are preserved so decode restores the original filename.
+                  Add <strong>Encrypt with password</strong> below if you also need confidentiality.
+                </small>
+              </div>
+              
+              <!-- Capacity Analysis Bar -->
+              <div id="capacity-analysis" class="mt-2" style="display: none;">
+                <div class="progress" style="height: 24px;">
+                  <div id="usage-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <small id="capacity-stats" class="text-muted"></small>
+                  <div class="d-flex align-items-center gap-2">
+                    <span id="auto-mode-badge" class="badge bg-primary">Auto: 1-LSB</span>
+                    <button id="mode-override-btn" class="btn btn-sm btn-outline-secondary" type="button">Override</button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Manual Override Selector (hidden by default) -->
+              <div id="manual-mode-override" class="mt-2" style="display: none;">
+                <select id="manual-lsb-mode" class="form-select form-select-sm">
+                  <option value="1">Force 1-LSB (Most Stealth)</option>
+                  <option value="2">Force 2-LSB</option>
+                  <option value="3">Force 3-LSB</option>
+                  <option value="4">Force 4-LSB (Max Capacity)</option>
+                </select>
+                <button id="mode-auto-btn" class="btn btn-sm btn-link" type="button">Back to Auto</button>
+              </div>
             </div>
 
-            <div class="form-group">
-              <button class="encode btn btn-default pull-right" onclick="encodeMessage()">Encode</button>
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="compress-toggle">
+                <label class="form-check-label" for="compress-toggle">
+                  <strong>Compress payload</strong> (deflate)
+                </label>
+              </div>
+              <small class="text-muted d-block mt-1">
+                Shrinks text and files before embedding to fit more in the image. Leave off to store the payload as-is.
+              </small>
+              <small id="compression-note" class="small mt-1" style="display: none;" aria-live="polite"></small>
+              <div id="compress-unavailable" class="alert alert-warning py-2 mt-2 mb-0" style="display: none;">
+                Compression requires the <code>CompressionStream</code> API, which this browser does not support.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="encrypt-toggle">
+                <label class="form-check-label" for="encrypt-toggle">
+                  <strong>Encrypt with password</strong> (AES-256-GCM)
+                </label>
+              </div>
+              <div id="encrypt-password-group" class="mt-2" style="display: none;">
+                <div class="mb-2">
+                  <label for="encrypt-password" class="form-label small mb-1">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="encrypt-password" autocomplete="new-password" spellcheck="false">
+                </div>
+                <div class="mb-2">
+                  <label for="encrypt-password-confirm" class="form-label small mb-1">Confirm password</label>
+                  <input type="password" class="form-control form-control-sm" id="encrypt-password-confirm" autocomplete="new-password" spellcheck="false">
+                </div>
+                <small id="encrypt-password-feedback" class="text-muted d-block" aria-live="polite"></small>
+                <small class="text-muted d-block mt-2">
+                  Adds 45 bytes of overhead per message. Share the PNG as-is &mdash; resizing, cropping, or re-saving it (including through most social-media sites) destroys the hidden message.
+                </small>
+              </div>
+              <div id="encrypt-unavailable" class="alert alert-warning py-2 mt-2 mb-0" style="display: none;">
+                Encryption requires the Web Crypto API, which needs a secure context (HTTPS or <code>localhost</code>).
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-end">
+                <button type="button" class="encode-btn btn btn-primary">Encode</button>
+              </div>
             </div>
           </form>
-          <div class="clearfix"></div>
+          </div>
         </div>
 
-        <div class="error" style="display: none;"></div>
+        <div class="error alert alert-danger" role="alert" aria-live="assertive" style="display: none;"></div>
         <div class="binary" style="display: none;">
-          <h3>Binary representation of your message</h3>
-          <textarea class="form-control message" style="word-wrap:break-word;">
-          </textarea>
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Binary Representation</h5>
+            </div>
+            <div class="card-body bg-body-secondary p-3" style="max-height: 200px; overflow-y: auto; word-wrap: break-word; word-break: break-all; font-family: 'Courier New', monospace; font-size: 0.75rem;">
+            </div>
+          </div>
         </div>
-        <div class="images" style="display: none;">
-          <div class="original" style="display: none;">
-            <h3>Original</h3>
-            <canvas></canvas>
+        <div class="encoded-preview" id="encodedPreviewSection" style="display: none;">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Encoded</h5>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Preview toggle">
+                <input type="radio" class="btn-check" name="encodedPreviewToggle" id="previewToggleEncoded" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="previewToggleEncoded">Encoded</label>
+                <input type="radio" class="btn-check" name="encodedPreviewToggle" id="previewToggleOriginal" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="previewToggleOriginal">Original</label>
+              </div>
+            </div>
+            <div class="card-body p-2">
+              <canvas id="encodedPreviewCanvas" class="w-100"></canvas>
+              <div class="text-center mt-2">
+                <button type="button" class="btn btn-sm btn-primary" id="downloadEncoded">
+                  <span>⬇️</span> Download Image
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="nulled" style="display: none;">
-            <h3>Normalized</h3>
-            <canvas></canvas>
-          </div>
-          <div class="message" style="display: none;">
-            <h3>Message hidden in image (right click <span class="glyphicon glyphicon-arrow-right"></span> save as)</h3>
-            <canvas></canvas>
-          </div>
+        </div>
+        <div class="d-none">
+          <div class="original"><canvas></canvas></div>
+          <div class="nulled"><canvas></canvas></div>
+          <div class="message"><canvas></canvas></div>
         </div>
       </div>
 
-      <div class="tab-pane" id="decode">
-        <div>
-          <h2>Decode image</h2>
-          <p class="alert alert-info">
-            To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong> button.<br/><br/>
-            Neither the image nor the message that has been hidden will be at any moment transmitted over the web, all the magic happens within your browser.
-          </p>
+      <div class="tab-pane fade" id="decode" role="tabpanel" aria-labelledby="decode-tab">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Decode image</h2>
+            <p class="alert alert-info mb-0">
+              To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong> button.
+              <small class="d-block mt-2">Neither the image nor the message that has been hidden will be transmitted over the web, all the magic happens within your browser.</small>
+            </p>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-body">
           <form class="form">
-            <div class="form-group">
-              <input class="form-control" type="file" name="decodeFile" onchange="previewDecodeImage()">
+            <div class="mb-3">
+              <div class="drop-zone" id="decodeDropZone">
+                <input class="form-control d-none" type="file" name="decodeFile" accept="image/png,image/jpeg,image/webp">
+                <div class="drop-zone-content">
+                  <div class="drop-zone-icon">📁</div>
+                  <div class="drop-zone-text">
+                    <strong>Drag & Drop Image Here</strong><br>
+                    <small class="text-muted">or click to browse</small>
+                  </div>
+                </div>
+                <div class="drop-zone-preview" aria-hidden="true">
+                  <canvas></canvas>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <button class="decode btn btn-default pull-right" onclick="decodeMessage()">Decode</button>
+            <div id="decrypt-password-group" class="mb-3" style="display: none;">
+              <label for="decrypt-password" class="form-label small mb-1">Password (image is encrypted)</label>
+              <input type="password" class="form-control form-control-sm" id="decrypt-password" autocomplete="current-password" spellcheck="false">
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-end">
+                <button type="button" class="decode-btn btn btn-primary">Decode</button>
+              </div>
             </div>
           </form>
-          <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div id="decode-mode-detector" class="mt-2" style="display: none;">
+          <div id="auto-detected" class="alert alert-success py-2 mb-0">
+            <span id="detected-mode-icon">✓</span>
+            <strong>Detected:</strong> <span id="detected-mode-text">1-LSB</span> encoding
+            <span id="detected-encrypted-badge" class="badge bg-dark ms-1" style="display: none;">🔒 Encrypted</span>
+            <span id="detected-compressed-badge" class="badge bg-secondary ms-1" style="display: none;">🗜️ Compressed</span>
+            <button class="btn btn-sm btn-link py-0" id="manual-override-btn">Override</button>
+          </div>
+          
+          <div id="manual-mode-select" class="mt-2" style="display: none;">
+            <label class="form-label small">Select LSB Mode:</label>
+            <select id="decode-lsb-mode" class="form-select form-select-sm">
+              <option value="1">1-LSB (Standard)</option>
+              <option value="2">2-LSB (2× capacity)</option>
+              <option value="3">3-LSB (3× capacity)</option>
+              <option value="4">4-LSB (4× capacity)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="error-decode alert alert-danger" role="alert" aria-live="assertive" style="display: none;"></div>
+        <div class="decode-capacity-bar" style="display: none;">
+          <div class="alert alert-info">
+            <h5>Capacity Utilization</h5>
+            <div class="progress mb-2" style="height: 30px;">
+              <div id="decode-capacity-used-bar" class="progress-bar bg-success" style="width: 0%;" role="progressbar">
+                <span id="decode-capacity-used-text">Used: 0%</span>
+              </div>
+              <div id="decode-capacity-available-bar" class="progress-bar bg-info" style="width: 100%;" role="progressbar">
+                <span id="decode-capacity-available-text">Available: 100%</span>
+              </div>
+            </div>
+            <small id="decode-capacity-details" class="text-muted"></small>
+          </div>
         </div>
         <div class="binary-decode" style="display: none;">
-          <h3>Hidden message</h3>
-          <textarea class="form-control message" style="word-wrap:break-word;">
-          </textarea>
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h5 class="mb-0">Decoded Message</h5>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Decoded message actions">
+                <button type="button" class="btn btn-outline-secondary" id="decoded-copy-btn"
+                        aria-label="Copy decoded message to clipboard" disabled>
+                  <span aria-hidden="true">📋</span>
+                  <span id="decoded-copy-label">Copy</span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="decoded-download-btn"
+                        aria-label="Download decoded message as a text file" disabled>
+                  <span aria-hidden="true">⬇️</span>
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body bg-body-secondary" id="decoded-message-text" style="max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-family: monospace;">
+            </div>
+          </div>
         </div>
-        <div class="decode" style="display: none;">
-          <h3>Input</h3>
-          <canvas></canvas>
+        <div class="file-decode" style="display: none;">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h5 class="mb-0">Decoded File</h5>
+              <button type="button" class="btn btn-sm btn-primary" id="decoded-file-download-btn"
+                      aria-label="Download decoded file" disabled>
+                <span aria-hidden="true">⬇️</span>
+                <span>Download</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <dl class="row mb-0">
+                <dt class="col-sm-3">Filename</dt>
+                <dd class="col-sm-9" id="decoded-file-name">&mdash;</dd>
+                <dt class="col-sm-3">MIME type</dt>
+                <dd class="col-sm-9" id="decoded-file-mime">&mdash;</dd>
+                <dt class="col-sm-3">Size</dt>
+                <dd class="col-sm-9" id="decoded-file-size">&mdash;</dd>
+                <dt class="col-sm-3">Integrity</dt>
+                <dd class="col-sm-9" id="decoded-file-crc">&mdash;</dd>
+              </dl>
+              <div id="decoded-file-image-preview" class="mt-3" style="display: none;">
+                <img alt="Decoded image preview" style="max-width: 100%; max-height: 320px; border-radius: 0.375rem;">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-none">
+          <div class="decode"><canvas></canvas></div>
         </div>
       </div>
 
     </div>
 
-    <footer style="text-align: center; margin-top: 20px; margin-bottom: 10px;">
-      &copy; 2014 by <a href="mailto:stylesuxx@gmail.com">stylesuxx</a>
+    <footer class="text-center mt-5 mb-3 text-muted">
+      <small>
+        Enhanced version &copy; 2026 by <a href="https://github.com/ST4RKiLLaX/steganography" target="_blank" rel="noopener">ST4RKiLLaX</a><br>
+        Based on <a href="http://stylesuxx.github.io/steganography/" target="_blank" rel="noopener">Steganography Online</a> 
+        by <a href="mailto:stylesuxx@gmail.com">stylesuxx</a> (2014)
+      </small>
     </footer>
   </div>
 
   <style>
+    /* CSS Variables for theming */
+    :root {
+      --canvas-bg: #f8f9fa;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-bs-theme="dark"] {
+      --canvas-bg: #212529;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Canvas styling with theme support */
     canvas {
       max-width: 100%;
+      background-color: var(--canvas-bg);
+      border-radius: 0.375rem;
+    }
+
+    /* Capacity badge styling */
+    #encode-capacity .badge {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.7rem;
+    }
+
+    .capacity-badge {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .capacity-badge:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* LSB mode selector color coding */
+    #lsb-bits option[value="1"] { color: green; }
+    #lsb-bits option[value="2"] { color: blue; }
+    #lsb-bits option[value="3"] { color: orange; }
+    #lsb-bits option[value="4"] { color: red; }
+
+    /* Progress bars */
+    .progress-bar {
+      font-weight: bold;
+      font-size: 0.95rem;
+      transition: width 0.6s ease;
+    }
+
+    /* Bootstrap 5 dropped bg-orange; declare it for the 85-95% warning band. */
+    .progress-bar.bg-orange {
+      background-color: #fd7e14;
+      color: #fff;
+    }
+
+
+    /* Card enhancements */
+    .card {
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s;
+    }
+
+    /* Theme toggle button */
+    #theme-toggle {
+      min-width: 45px;
+    }
+
+    /* Binary display */
+    .binary .card-body {
+      line-height: 1.2;
+    }
+
+    /* Drag and Drop Zones */
+    .drop-zone {
+      border: 2px dashed var(--bs-border-color);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bs-body-bg);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .drop-zone:hover {
+      border-color: var(--bs-primary);
+      background: var(--bs-primary-bg-subtle);
+    }
+
+    .drop-zone.drag-active {
+      border-color: var(--bs-success);
+      border-style: solid;
+      background: var(--bs-success-bg-subtle);
+      transform: scale(1.02);
+    }
+
+    .drop-zone-content {
+      pointer-events: none;
+    }
+
+    .drop-zone-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.5;
+    }
+
+    .drop-zone-text strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--bs-body-color);
+    }
+
+    .drop-zone-text small {
+      color: var(--bs-secondary-color);
+    }
+
+    .drop-zone-preview {
+      display: none;
+      width: 100%;
+    }
+
+    .drop-zone-preview canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 767px) {
+      .drop-zone {
+        padding: 1.5rem;
+      }
+      
+      .drop-zone-icon {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Performance: Skip rendering hidden content */
+    .binary,
+    .decode-capacity-bar,
+    .binary-decode {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 500px;
     }
   </style>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script type="text/JavaScript" src="script.js"></script>
+  <script src="theme.js?v=1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="constants.js?v=5"></script>
+  <script src="crypto.js?v=1"></script>
+  <script src="compress.js?v=1"></script>
+  <script type="text/JavaScript" src="script.js?v=32"></script>
 </body>
 </html>
